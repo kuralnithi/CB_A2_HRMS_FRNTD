@@ -20,7 +20,11 @@ export default async function DashboardPage() {
     console.error("Dashboard stats failed:", e);
   }
 
-  if (role === "ADMIN") return <AdminDashboard stats={stats} />;
-  if (role === "MANAGER") return <ManagerDashboard stats={stats} />;
-  return <EmployeeDashboard stats={stats} />;
+  return (
+    <div className="flex-1 min-h-0 overflow-y-auto pr-1 pb-8 h-full scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800">
+      {role === "ADMIN" && <AdminDashboard stats={stats} />}
+      {role === "MANAGER" && <ManagerDashboard stats={stats} />}
+      {role === "EMPLOYEE" && <EmployeeDashboard stats={stats} />}
+    </div>
+  );
 }

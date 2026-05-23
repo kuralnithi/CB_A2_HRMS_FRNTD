@@ -166,7 +166,7 @@ export default function ProjectDetailPage() {
   const isManagerOrAdmin = role === "ADMIN" || role === "MANAGER";
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 flex-1 min-h-0 overflow-y-auto pr-2 pb-8 w-full scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800">
       {/* Header */}
       <div className="flex items-start gap-3">
         <Link href="/dashboard/projects" className="mt-1 p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">

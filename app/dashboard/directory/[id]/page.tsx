@@ -84,7 +84,7 @@ export default function EmployeeProfilePage() {
   const initials = emp.name.split(" ").map((n: string) => n[0]).join("").substring(0, 2).toUpperCase();
 
   return (
-    <div className="max-w-3xl mx-auto space-y-5">
+    <div className="max-w-3xl mx-auto space-y-5 flex-1 min-h-0 overflow-y-auto pr-2 pb-8 w-full scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800">
       {/* Back */}
       <Link href="/dashboard/directory" className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-800 transition-colors">
         <ArrowLeft className="h-4 w-4" /> Back to Directory
@@ -111,13 +111,13 @@ export default function EmployeeProfilePage() {
           )}
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5 pt-5 border-t">
-          {emp.phone && <InfoItem icon={<Phone />} label="Phone" value={emp.phone} />}
-          {emp.work_location && <InfoItem icon={<MapPin />} label="Location" value={emp.work_location} />}
-          {emp.gender && <InfoItem icon={<User />} label="Gender" value={emp.gender} />}
-          {emp.date_of_joining && <InfoItem icon={<Calendar />} label="Joined" value={new Date(emp.date_of_joining).toLocaleDateString("en-IN")} />}
-          {emp.years_of_experience && <InfoItem icon={<Clock />} label="Experience" value={`${emp.years_of_experience} years`} />}
-          {emp.manager_name && <InfoItem icon={<Briefcase />} label="Reports To" value={emp.manager_name} />}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-5 mt-5 pt-5 border-t">
+          {emp.phone && <InfoItem icon={Phone} label="Phone" value={emp.phone} />}
+          {emp.work_location && <InfoItem icon={MapPin} label="Location" value={emp.work_location} />}
+          {emp.gender && <InfoItem icon={User} label="Gender" value={emp.gender} />}
+          {emp.date_of_joining && <InfoItem icon={Calendar} label="Joined" value={new Date(emp.date_of_joining).toLocaleDateString("en-IN")} />}
+          {emp.years_of_experience && <InfoItem icon={Clock} label="Experience" value={`${emp.years_of_experience} years`} />}
+          {emp.manager_name && <InfoItem icon={Briefcase} label="Reports To" value={emp.manager_name} />}
         </div>
       </div>
 
@@ -223,13 +223,14 @@ export default function EmployeeProfilePage() {
   );
 }
 
-function InfoItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function InfoItem({ icon: Icon, label, value }: { icon: React.ComponentType<any>; label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs text-zinc-400 flex items-center gap-1 mb-0.5">
-        <span className="h-3.5 w-3.5">{icon}</span>{label}
+      <p className="text-xs text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5 mb-1.5">
+        <Icon className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0" />
+        <span className="font-medium tracking-wide">{label}</span>
       </p>
-      <p className="text-sm font-medium">{value}</p>
+      <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">{value}</p>
     </div>
   );
 }

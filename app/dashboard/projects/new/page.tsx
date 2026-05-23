@@ -88,7 +88,7 @@ export default function NewProjectPage() {
   );
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6 flex-1 min-h-0 overflow-y-auto pr-2 pb-8 w-full scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800">
       <div className="flex items-center gap-3">
         <Link href="/dashboard/projects" className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
           <ArrowLeft className="h-5 w-5" />

@@ -56,7 +56,7 @@ export default function RequestLeavePage() {
   };
 
   return (
-    <div className="space-y-6 max-w-2xl mx-auto">
+    <div className="space-y-6 max-w-2xl mx-auto flex-1 min-h-0 overflow-y-auto pr-2 pb-8 w-full scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800">
       <div className="flex items-center gap-4">
         <Link href="/dashboard/leaves" className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition">
           <ArrowLeft className="h-5 w-5" />
