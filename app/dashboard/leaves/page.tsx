@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Calendar, Plus, CheckCircle2, XCircle, Clock, ChevronDown, X, Search, Filter, Maximize2, Minimize2, LayoutGrid, List } from "lucide-react";
 import { fetchApi } from "@/lib/api-client";
+import { Portal } from "@/components/ui/portal";
 
 const STATUS_STYLES: Record<string, string> = {
   PENDING:  "bg-amber-50 text-amber-700 border border-amber-200",
@@ -101,10 +102,10 @@ export default function LeavesPage() {
   const pendingLeaves = filteredLeaves.filter(l => l.status === "PENDING");
   const approvedLeaves = filteredLeaves.filter(l => l.status === "APPROVED");
 
-  return (
+  const mainContent = (
     <div className={`space-y-4 transition-all duration-300 overflow-hidden flex flex-col group ${
       isFullscreen 
-        ? "fixed inset-0 z-[100] p-6 bg-white dark:bg-zinc-950 h-screen w-screen" 
+        ? "fixed inset-0 z-[9999] p-6 bg-zinc-50 dark:bg-zinc-950 h-screen w-screen" 
         : "relative flex-1 min-h-0 w-full"
     }`}>
       {/* Background Icon */}
@@ -496,4 +497,6 @@ export default function LeavesPage() {
       )}
     </div>
   );
+
+  return isFullscreen ? <Portal>{mainContent}</Portal> : mainContent;
 }

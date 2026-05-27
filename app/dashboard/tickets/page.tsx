@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Ticket, Plus, X, CheckCircle2, Clock, AlertTriangle, XCircle, Calendar, Filter, Maximize2, Minimize2 } from "lucide-react";
 import { fetchApi } from "@/lib/api-client";
+import { Portal } from "@/components/ui/portal";
 
 const STATUS_STYLES: Record<string, string> = {
   OPEN:        "bg-blue-50 text-blue-700 border border-blue-200",
@@ -41,6 +42,7 @@ export default function TicketsPage() {
   const [form, setForm] = useState({ title: "", description: "", priority: "MEDIUM" });
   const [formError, setFormError] = useState("");
   const [formLoading, setFormLoading] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
 
   const isAdminOrManager = role === "ADMIN" || role === "MANAGER";
 
@@ -162,11 +164,13 @@ export default function TicketsPage() {
       </div>
  
       {/* Tickets List */}
-      <div className={`bg-white dark:bg-zinc-900 rounded-xl border shadow-sm overflow-hidden flex flex-col transition-all duration-300 ${
-        isFullscreen 
-          ? "fixed inset-0 z-[100] p-6 rounded-none border-none h-screen w-screen" 
-          : "flex-1 min-h-0"
-      }`}>
+      {(() => {
+        const listCardContent = (
+          <div className={`bg-white dark:bg-zinc-900 rounded-xl border shadow-sm overflow-hidden flex flex-col transition-all duration-300 ${
+            isFullscreen 
+              ? "fixed inset-0 z-[9999] p-6 rounded-none border-none h-screen w-screen bg-zinc-50 dark:bg-zinc-950" 
+              : "flex-1 min-h-0"
+          }`}>
         <div className="px-5 py-4 border-b flex items-center justify-between gap-2 shrink-0">
           <div className="flex items-center gap-2">
             <Ticket className="h-4 w-4 text-blue-600" />
@@ -254,7 +258,7 @@ export default function TicketsPage() {
         <div className="flex-1 overflow-y-auto min-h-0">
           {loading ? (
             <div className="space-y-3 p-5">
-              {[1,2,3,4,5].map(i => <div key={i} className="h-14 bg-zinc-100 dark:bg-zinc-800 rounded-lg animate-pulse" />)}
+              {[1,2,3].map(i => <div key={i} className="h-14 bg-zinc-100 dark:bg-zinc-800 rounded-lg animate-pulse" />)}
             </div>
           ) : tickets.length === 0 ? (
             <div className="text-center py-16 text-zinc-400">
@@ -272,7 +276,11 @@ export default function TicketsPage() {
           ) : (
             <div className="divide-y dark:divide-zinc-800">
               {filteredTickets.map(ticket => (
-                <div key={ticket.id} className="px-5 py-4 flex items-start gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors">
+                <div 
+                  key={ticket.id} 
+                  onClick={() => setSelectedTicket(ticket)}
+                  className="px-5 py-4 flex items-start gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors cursor-pointer"
+                >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
                       <span className="text-xs font-mono text-zinc-400">#{ticket.id}</span>
@@ -302,6 +310,7 @@ export default function TicketsPage() {
                     <select
                       disabled={actionLoading === ticket.id}
                       value={ticket.status}
+                      onClick={(e) => e.stopPropagation()}
                       onChange={e => handleStatusChange(ticket.id, e.target.value)}
                       className="text-xs border rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 flex-shrink-0 text-zinc-700 dark:text-zinc-300 cursor-pointer"
                     >
@@ -314,6 +323,9 @@ export default function TicketsPage() {
           )}
         </div>
       </div>
+      );
+      return isFullscreen ? <Portal>{listCardContent}</Portal> : listCardContent;
+    })()}
 
       {/* Raise Ticket Modal */}
       {showModal && (
@@ -369,6 +381,73 @@ export default function TicketsPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* View Ticket Details Modal */}
+      {selectedTicket && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4" onClick={() => setSelectedTicket(null)}>
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-5 border-b bg-zinc-50 dark:bg-zinc-800/50 shrink-0">
+              <div>
+                <h2 className="font-bold text-lg flex items-center gap-2 text-zinc-800 dark:text-zinc-100">
+                  <Ticket className="h-5 w-5 text-blue-600" /> #{selectedTicket.id}
+                </h2>
+                <p className="text-sm text-zinc-500 mt-1">{selectedTicket.title}</p>
+              </div>
+              <button onClick={() => setSelectedTicket(null)} className="p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+                <X className="h-5 w-5 text-zinc-500" />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto">
+              <div className="flex items-center gap-3 flex-wrap mb-6">
+                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${STATUS_STYLES[selectedTicket.status] || STATUS_STYLES.OPEN}`}>
+                  Status: {selectedTicket.status?.replace("_", " ")}
+                </span>
+                {selectedTicket.priority && (
+                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${PRIORITY_STYLES[selectedTicket.priority] || PRIORITY_STYLES.MEDIUM}`}>
+                    Priority: {selectedTicket.priority}
+                  </span>
+                )}
+                {selectedTicket.created_at && (
+                  <span className="text-xs text-zinc-500 flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    {new Date(selectedTicket.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                )}
+              </div>
+              
+              <div className="mb-6">
+                <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Description</h3>
+                <div className="text-sm text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap bg-zinc-50 dark:bg-zinc-800/30 p-4 rounded-xl border dark:border-zinc-800">
+                  {selectedTicket.description}
+                </div>
+              </div>
+
+              {isAdminOrManager && selectedTicket.employee_name && (
+                <div>
+                  <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Raised By</h3>
+                  <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{selectedTicket.employee_name}</p>
+                </div>
+              )}
+            </div>
+            {isAdminOrManager && (
+              <div className="p-4 border-t bg-zinc-50 dark:bg-zinc-800/50 flex items-center justify-between shrink-0">
+                <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Update Status:</span>
+                <select
+                  disabled={actionLoading === selectedTicket.id}
+                  value={selectedTicket.status}
+                  onChange={async e => {
+                    await handleStatusChange(selectedTicket.id, e.target.value);
+                    setSelectedTicket({ ...selectedTicket, status: e.target.value });
+                  }}
+                  className="text-sm border rounded-lg px-3 py-2 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 text-zinc-700 dark:text-zinc-300 cursor-pointer font-medium shadow-sm"
+                >
+                  {STATUS_OPTS.map(s => <option key={s} value={s}>{s.replace("_", " ")}</option>)}
+                </select>
+              </div>
+            )}
           </div>
         </div>
       )}

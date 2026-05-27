@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, User as UserIcon, Menu, X } from "lucide-react";
+import { LogOut, User as UserIcon, Menu, X, ChevronUp, ChevronDown } from "lucide-react";
 import { fetchApi } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 
@@ -53,6 +53,7 @@ export default function Header({ user: initialUser }: { user?: any }) {
   const { data: session } = useSession();
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isNavVisible, setIsNavVisible] = useState(false);
   const initials = initialUser?.email?.substring(0, 2).toUpperCase() || "U";
   
   const role = initialUser?.role?.toUpperCase() || "EMPLOYEE";
@@ -87,21 +88,25 @@ export default function Header({ user: initialUser }: { user?: any }) {
   }, [session]);
 
   return (
-    <div className="flex flex-col border-b bg-white dark:bg-zinc-900 sticky top-0 z-50 max-w-full overflow-x-hidden">
-      <header className="flex h-14 items-center justify-between px-4 md:px-6 w-full max-w-full overflow-hidden">
+    <div 
+      className="flex flex-col sticky top-0 z-50 max-w-full overflow-visible relative transition-all duration-500 ease-in-out group"
+      onMouseEnter={() => setIsNavVisible(true)}
+      onMouseLeave={() => setIsNavVisible(false)}
+    >
+      <header className="flex h-14 items-center justify-between px-4 md:px-6 w-full max-w-full overflow-hidden relative z-20 bg-transparent backdrop-blur-xl border-b border-zinc-200/20 dark:border-zinc-800/30 shadow-sm transition-all duration-300 group-hover:bg-white/10 dark:group-hover:bg-zinc-950/20">
         <div className="flex items-center gap-2 md:gap-6 min-w-0">
           <button 
             onClick={() => setIsMobileMenuOpen(true)}
-            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md md:hidden flex-shrink-0"
+            className="p-2 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 rounded-md md:hidden flex-shrink-0 transition-colors"
           >
             <Menu className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
           </button>
 
           <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-sm">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.5)]">
               <LayersIcon className="h-4 w-4" />
             </div>
-            <span className="font-bold text-sm tracking-tight hidden sm:block">CB Nest</span>
+            <span className="font-bold text-sm tracking-tight hidden sm:block drop-shadow-md">CB Nest</span>
           </div>
           <div className="h-4 w-[1px] bg-zinc-200 dark:bg-zinc-800 hidden lg:block flex-shrink-0" />
           <div className="hidden sm:block min-w-0 overflow-hidden">
@@ -111,7 +116,7 @@ export default function Header({ user: initialUser }: { user?: any }) {
         
         <div className="flex items-center gap-4 flex-shrink-0">
           <DropdownMenu>
-            <DropdownMenuTrigger className="relative h-8 w-8 rounded-full border border-zinc-200 dark:border-zinc-800 outline-none hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center cursor-pointer transition-colors">
+            <DropdownMenuTrigger className="relative h-8 w-8 rounded-full border border-zinc-200/50 dark:border-zinc-800/50 outline-none hover:ring-2 hover:ring-blue-500/50 flex items-center justify-center cursor-pointer transition-all shadow-sm">
               <Avatar className="h-8 w-8">
                 {profilePhoto && <AvatarImage src={profilePhoto} className="object-cover" />}
                 <AvatarFallback className="bg-blue-100 text-blue-700 font-semibold text-xs dark:bg-blue-900 dark:text-blue-300">
@@ -119,7 +124,7 @@ export default function Header({ user: initialUser }: { user?: any }) {
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end">
+            <DropdownMenuContent className="w-56 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border-zinc-200/50 dark:border-zinc-800/50 shadow-xl" align="end">
               <DropdownMenuGroup>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
@@ -130,13 +135,13 @@ export default function Header({ user: initialUser }: { user?: any }) {
                   </div>
                 </DropdownMenuLabel>
               </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/dashboard/profile")}>
+              <DropdownMenuSeparator className="bg-zinc-200/50 dark:bg-zinc-800/50" />
+              <DropdownMenuItem className="cursor-pointer hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50" onClick={() => router.push("/dashboard/profile")}>
                 <UserIcon className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600" onClick={() => signOut({ callbackUrl: "/login" })}>
+              <DropdownMenuSeparator className="bg-zinc-200/50 dark:bg-zinc-800/50" />
+              <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600 hover:bg-red-50/50 dark:hover:bg-red-900/20" onClick={() => signOut({ callbackUrl: "/login" })}>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
               </DropdownMenuItem>
@@ -145,9 +150,30 @@ export default function Header({ user: initialUser }: { user?: any }) {
         </div>
       </header>
       
-      <div className="px-6 pb-2 hidden md:block w-full max-w-full overflow-hidden">
+      <div 
+        className={cn(
+          "absolute left-0 right-0 top-14 hidden md:block w-full max-w-full transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] origin-top z-10 bg-transparent",
+          isNavVisible ? "opacity-100 translate-y-0 pb-3 pt-2 px-6 scale-100 pointer-events-auto" : "opacity-0 -translate-y-4 px-6 scale-95 pointer-events-none"
+        )}
+      >
         <TopNav role={initialUser?.role} />
       </div>
+
+      {/* Full Page Blur Overlay */}
+      <div 
+        className={cn(
+          "hidden md:block fixed inset-x-0 top-14 h-[100vh] pointer-events-none transition-all duration-500 -z-10",
+          isNavVisible ? "backdrop-blur-[3px] bg-white/10 dark:bg-black/20 opacity-100" : "backdrop-blur-none bg-transparent opacity-0"
+        )}
+      />
+
+      {/* Decorative glossy bottom edge indicator when hidden */}
+      <div 
+        className={cn(
+          "absolute left-1/2 bottom-0 translate-y-1/2 -translate-x-1/2 h-1 w-16 rounded-full bg-blue-500/40 dark:bg-blue-400/40 backdrop-blur-md transition-all duration-500 hidden md:block shadow-[0_0_10px_rgba(59,130,246,0.5)]",
+          isNavVisible ? "opacity-0 scale-x-0" : "opacity-100 scale-x-100"
+        )}
+      />
 
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-[100] md:hidden">

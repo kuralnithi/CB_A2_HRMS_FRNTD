@@ -62,14 +62,16 @@ export default function TopNav({ role }: { role?: string }) {
             key={link.href}
             href={link.href}
             className={cn(
-              "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all whitespace-nowrap border-b-2",
+              "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-300 whitespace-nowrap rounded-full border hover:scale-105 active:scale-95",
               isActive
-                ? "border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-500"
-                : "border-transparent text-zinc-600 hover:text-zinc-900 hover:border-zinc-300 dark:text-zinc-400 dark:hover:text-zinc-300 dark:hover:border-zinc-700"
+                ? "border-blue-500/50 text-blue-600 bg-blue-500/10 shadow-[0_0_15px_rgba(59,130,246,0.3)] dark:text-blue-400 dark:border-blue-400/50 dark:bg-blue-400/10 dark:shadow-[0_0_15px_rgba(96,165,250,0.3)]"
+                : "border-transparent text-zinc-600 hover:text-blue-600 hover:bg-blue-500/5 hover:border-blue-500/30 hover:shadow-[0_0_10px_rgba(59,130,246,0.2)] dark:text-zinc-400 dark:hover:text-blue-400 dark:hover:bg-blue-400/5 dark:hover:border-blue-400/30 dark:hover:shadow-[0_0_10px_rgba(96,165,250,0.2)]"
             )}
           >
-            <Icon className="h-4 w-4" />
-            {link.label}
+            <Icon className={cn("h-4 w-4 transition-all duration-300", isActive ? "drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" : "")} />
+            <span className={cn("transition-all duration-300", isActive ? "drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]" : "")}>
+              {link.label}
+            </span>
           </Link>
         );
       })}

@@ -12,6 +12,7 @@ import {
   PieChart, Pie, Cell, BarChart, Bar, Legend
 } from "recharts";
 import { useState } from "react";
+import { Portal } from "@/components/ui/portal";
 
 interface Props { stats: any }
 
@@ -50,6 +51,131 @@ export default function AdminDashboard({ stats }: Props) {
     { name: 'Ongoing', value: 12, color: '#10b981' },
     { name: 'Completed', value: 25, color: '#3b82f6' },
   ];
+
+  const trendChartContent = (isFullscreenMode: boolean) => (
+    <div className={`bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm flex flex-col relative overflow-hidden transition-all duration-300 rounded-2xl p-6 h-full w-full z-10`}>
+      {!isFullscreenMode && (
+        <div className="absolute -right-8 -bottom-8 opacity-[0.03] dark:opacity-[0.05] text-zinc-900 dark:text-white pointer-events-none transition-transform duration-500 group-hover:scale-105">
+          <TrendingUp className="w-56 h-56" />
+        </div>
+      )}
+      <div className="flex justify-between items-center mb-6 relative z-10">
+        <div>
+          <h3 className="text-lg font-bold flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-blue-500" />
+            Growth Trajectory
+          </h3>
+          <p className="text-xs text-zinc-500">Employee and Project growth over the last 6 months</p>
+        </div>
+        {/* Fullscreen Button */}
+        <button
+          type="button"
+          onClick={() => setIsTrendFullscreen(!isFullscreenMode)}
+          className="p-1.5 text-zinc-400 hover:text-blue-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg border dark:border-zinc-800 transition-colors shadow-sm bg-white dark:bg-zinc-900 flex-shrink-0 cursor-pointer"
+          title={isFullscreenMode ? "Exit Fullscreen" : "View Fullscreen"}
+        >
+          {isFullscreenMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+        </button>
+      </div>
+      
+      <div className={`flex-1 w-full ${isFullscreenMode ? "min-h-0" : "min-h-[250px]"}`}>
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={mockTrendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <defs>
+              <linearGradient id="colorEmp" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+              </linearGradient>
+              <linearGradient id="colorProj" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" className="dark:stroke-zinc-800" />
+            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af' }} dy={10} />
+            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af' }} />
+            <RechartsTooltip 
+              contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
+              cursor={{ stroke: '#9ca3af', strokeWidth: 1, strokeDasharray: '4 4' }}
+            />
+            <Area type="monotone" dataKey="employees" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorEmp)" name="Employees" />
+            <Area type="monotone" dataKey="projects" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorProj)" name="Projects" />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+
+  const portfolioContent = (isFullscreenMode: boolean) => (
+    <div className={`bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm flex flex-col relative overflow-hidden transition-all duration-300 rounded-2xl p-6 h-full w-full z-10`}>
+      {!isFullscreenMode && (
+        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+          <Briefcase className="w-32 h-32" />
+        </div>
+      )}
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h3 className="text-lg font-bold flex items-center gap-2">
+            <FolderKanban className="w-5 h-5 text-indigo-500" />
+            Project Portfolio
+          </h3>
+          <p className="text-xs text-zinc-500">Current status distribution</p>
+        </div>
+        {/* Fullscreen Button */}
+        <button
+          type="button"
+          onClick={() => setIsPortfolioFullscreen(!isFullscreenMode)}
+          className="p-1.5 text-zinc-400 hover:text-blue-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg border dark:border-zinc-800 transition-colors shadow-sm bg-white dark:bg-zinc-900 flex-shrink-0 cursor-pointer"
+          title={isFullscreenMode ? "Exit Fullscreen" : "View Fullscreen"}
+        >
+          {isFullscreenMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+        </button>
+      </div>
+      
+      <div className={`flex-1 w-full mt-4 relative ${isFullscreenMode ? "min-h-0" : "min-h-[200px]"}`}>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={chartData}
+              cx="50%"
+              cy="50%"
+              innerRadius={isFullscreenMode ? "60%" : "60%"}
+              outerRadius={isFullscreenMode ? "80%" : "80%"}
+              paddingAngle={5}
+              dataKey="value"
+              stroke="none"
+            >
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+            <RechartsTooltip 
+              contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+              itemStyle={{ color: '#1f2937', fontWeight: 600 }}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+        {/* Center Label */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <span className={`font-black ${isFullscreenMode ? "text-6xl" : "text-3xl"}`}>{s.total_projects ?? 0}</span>
+          <span className={`font-semibold text-zinc-500 ${isFullscreenMode ? "text-lg mt-1" : "text-xs"}`}>Total</span>
+        </div>
+      </div>
+      
+      {/* Custom Legend */}
+      <div className={`space-y-1.5 mx-auto w-full ${isFullscreenMode ? "mt-6 max-w-md text-sm" : "mt-4 max-w-[240px] text-xs"}`}>
+        {chartData.map((entry, i) => (
+          <div key={i} className="flex items-center justify-between font-medium py-1 border-b border-zinc-100 dark:border-zinc-800/40 last:border-0">
+            <div className="flex items-center gap-2">
+              <span className={`rounded-full ${isFullscreenMode ? "w-3 h-3" : "w-2.5 h-2.5"}`} style={{ backgroundColor: entry.color }} />
+              <span className="text-zinc-600 dark:text-zinc-400">{entry.name}</span>
+            </div>
+            <span className="font-bold text-zinc-950 dark:text-zinc-50">{entry.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-8">
@@ -129,137 +255,34 @@ export default function AdminDashboard({ stats }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Trend Chart (Spans 2 columns) */}
-        <div data-robot-anchor="true" className={`relative ${
-          isTrendFullscreen 
-            ? "fixed inset-0 z-[100] p-8 w-screen h-screen bg-white dark:bg-zinc-950" 
-            : "lg:col-span-2"
-        }`}>
-          <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm flex flex-col transition-all duration-300 relative overflow-hidden group rounded-2xl p-6 h-full z-10">
-          {!isTrendFullscreen && (
-            <div className="absolute -right-8 -bottom-8 opacity-[0.03] dark:opacity-[0.05] text-zinc-900 dark:text-white pointer-events-none transition-transform duration-500 group-hover:scale-105">
-              <TrendingUp className="w-56 h-56" />
+        {isTrendFullscreen ? (
+          <Portal>
+            <div className="fixed inset-0 z-[9999] p-8 w-screen h-screen bg-zinc-50/90 dark:bg-zinc-950/90 backdrop-blur-md flex items-center justify-center">
+              <div className="w-full max-w-5xl h-[85vh]">
+                {trendChartContent(true)}
+              </div>
             </div>
-          )}
-          <div className="flex justify-between items-center mb-6 relative z-10">
-            <div>
-              <h3 className="text-lg font-bold flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-blue-500" />
-                Growth Trajectory
-              </h3>
-              <p className="text-xs text-zinc-500">Employee and Project growth over the last 6 months</p>
-            </div>
-            {/* Fullscreen Button */}
-            <button
-              type="button"
-              onClick={() => setIsTrendFullscreen(!isTrendFullscreen)}
-              className="p-1.5 text-zinc-400 hover:text-blue-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg border dark:border-zinc-800 transition-colors shadow-sm bg-white dark:bg-zinc-900 flex-shrink-0"
-              title={isTrendFullscreen ? "Exit Fullscreen" : "View Fullscreen"}
-            >
-              {isTrendFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-            </button>
+          </Portal>
+        ) : (
+          <div className="relative lg:col-span-2 group">
+            {trendChartContent(false)}
           </div>
-          
-          <div className={`flex-1 w-full ${isTrendFullscreen ? "min-h-0" : "min-h-[250px]"}`}>
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={mockTrendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorEmp" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorProj" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" className="dark:stroke-zinc-800" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af' }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af' }} />
-                <RechartsTooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
-                  cursor={{ stroke: '#9ca3af', strokeWidth: 1, strokeDasharray: '4 4' }}
-                />
-                <Area type="monotone" dataKey="employees" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorEmp)" name="Employees" />
-                <Area type="monotone" dataKey="projects" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorProj)" name="Projects" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-          </div>
-        </div>
+        )}
 
         {/* Project Status Donut Chart */}
-        <div data-robot-anchor="true" className={`relative ${
-          isPortfolioFullscreen
-            ? "fixed inset-0 z-[100] p-8 w-screen h-screen bg-white dark:bg-zinc-950"
-            : ""
-        }`}>
-          <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm flex flex-col relative overflow-hidden transition-all duration-300 rounded-2xl p-6 h-full z-10">
-          {!isPortfolioFullscreen && (
-            <div className="absolute top-0 right-0 p-4 opacity-5">
-              <Briefcase className="w-32 h-32" />
-            </div>
-          )}
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h3 className="text-lg font-bold flex items-center gap-2">
-                <FolderKanban className="w-5 h-5 text-indigo-500" />
-                Project Portfolio
-              </h3>
-              <p className="text-xs text-zinc-500">Current status distribution</p>
-            </div>
-            {/* Fullscreen Button */}
-            <button
-              type="button"
-              onClick={() => setIsPortfolioFullscreen(!isPortfolioFullscreen)}
-              className="p-1.5 text-zinc-400 hover:text-blue-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg border dark:border-zinc-800 transition-colors shadow-sm bg-white dark:bg-zinc-900 flex-shrink-0"
-              title={isPortfolioFullscreen ? "Exit Fullscreen" : "View Fullscreen"}
-            >
-              {isPortfolioFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-            </button>
-          </div>
-          
-          <div className={`flex-1 w-full mt-4 relative ${isPortfolioFullscreen ? "min-h-0" : "min-h-[200px]"}`}>
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={chartData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                  stroke="none"
-                >
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <RechartsTooltip 
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                  itemStyle={{ color: '#1f2937', fontWeight: 600 }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            {/* Center Label */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-3xl font-black">{s.total_projects ?? 0}</span>
-              <span className="text-xs font-semibold text-zinc-500">Total</span>
-            </div>
-          </div>
-          
-          {/* Custom Legend */}
-          <div className="grid grid-cols-2 gap-2 mt-2">
-            {chartData.map((entry, i) => (
-              <div key={i} className="flex items-center gap-2 text-xs font-medium">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
-                <span className="text-zinc-600 dark:text-zinc-400">{entry.name}</span>
-                <span className="ml-auto font-bold">{entry.value}</span>
+        {isPortfolioFullscreen ? (
+          <Portal>
+            <div className="fixed inset-0 z-[9999] p-8 w-screen h-screen bg-zinc-50/90 dark:bg-zinc-950/90 backdrop-blur-md flex items-center justify-center">
+              <div className="w-full max-w-2xl h-[85vh]">
+                {portfolioContent(true)}
               </div>
-            ))}
+            </div>
+          </Portal>
+        ) : (
+          <div className="relative">
+            {portfolioContent(false)}
           </div>
-        </div>
-        </div>
+        )}
       </div>
 
       {/* Bottom Section: Metrics & Actions */}

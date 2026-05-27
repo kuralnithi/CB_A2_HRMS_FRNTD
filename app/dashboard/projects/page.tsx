@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Search, ChevronRight, Users, Calendar, DollarSign, BarChart2, Plus, FolderKanban, LayoutGrid, List, Maximize2, Minimize2 } from "lucide-react";
 import { fetchApi } from "@/lib/api-client";
+import { Portal } from "@/components/ui/portal";
 
 const STATUS_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
   PLANNING:  { bg: "bg-blue-50",    text: "text-blue-700",    dot: "bg-blue-500" },
@@ -108,10 +109,10 @@ export default function ProjectsPage() {
     return true;
   });
 
-  return (
+  const mainContent = (
     <div className={`space-y-6 transition-all duration-300 overflow-hidden flex flex-col group ${
       isFullscreen 
-        ? "fixed inset-0 z-[100] p-6 bg-white dark:bg-zinc-950 h-screen w-screen" 
+        ? "fixed inset-0 z-[9999] p-6 bg-zinc-50 dark:bg-zinc-950 h-screen w-screen" 
         : "relative flex-1 min-h-0 w-full"
     }`}>
       {/* Background Icon */}
@@ -476,4 +477,6 @@ export default function ProjectsPage() {
       </div>
     </div>
   );
+
+  return isFullscreen ? <Portal>{mainContent}</Portal> : mainContent;
 }
