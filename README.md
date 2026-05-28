@@ -6,6 +6,12 @@ This is the frontend application for the AI HRMS Copilot project, built with Nex
 
 The AI HRMS Copilot is a modern Human Resources Management System designed to streamline HR operations with the power of Artificial Intelligence. It provides distinct role-based dashboards (Admin, Manager, Employee) and features a smart AI Assistant capable of answering HR policy questions and navigating the platform.
 
+## Gen AI Project
+
+### HRMS
+
+- [View the LinkedIn post for this HRMS project](https://www.linkedin.com/posts/kural-nithi-0b967122b_ai-generativeai-langchain-ugcPost-7465425438513938432-WNot/?utm_source=share&utm_medium=member_desktop&rcm=ACoAADmVtk0BmNqWq-K8895ZhmcAzBKhjfXB5oY)
+
 ### ✨ Key Features
 - **Role-Based Access Control**: Different views and capabilities for Admins, Managers, and Employees.
 - **Smart AI Copilot**: A context-aware chatbot that understands HR policies and can assist users dynamically.

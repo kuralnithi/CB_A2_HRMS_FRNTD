@@ -139,6 +139,17 @@ export default function LoginPage() {
           </div>
         </div>
 
+        <div className="mt-4 relative z-10">
+          <a
+            href="https://www.linkedin.com/posts/kural-nithi-0b967122b_ai-generativeai-langchain-ugcPost-7465425438513938432-WNot/?utm_source=share&utm_medium=member_desktop&rcm=ACoAADmVtk0BmNqWq-K8895ZhmcAzBKhjfXB5oY"
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm text-sky-300 hover:text-sky-200 transition-colors"
+          >
+            Learn more about NovaWorks on LinkedIn
+          </a>
+        </div>
+
         {/* Main Content Area (Auto-sliding feature presentation) */}
         <div className="my-auto relative z-10 w-full max-w-lg h-[460px] overflow-hidden flex flex-col justify-between">
           
