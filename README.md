@@ -2,6 +2,20 @@
 
 This is the frontend application for the AI HRMS Copilot project, built with Next.js 14, Tailwind CSS, and Shadcn UI.
 
+---
+
+## 🔗 Quick Links & Deployments
+
+- **Frontend Repository:** [https://github.com/kuralnithi/CB_A2_HRMS_FRNTD](https://github.com/kuralnithi/CB_A2_HRMS_FRNTD)
+- **Backend Repository:** [https://github.com/kuralnithi/CB_A2_HRMS](https://github.com/kuralnithi/CB_A2_HRMS)
+- **Frontend Deployed Link:** [https://cb-a2-hrms-frntd.vercel.app](https://cb-a2-hrms-frntd.vercel.app)
+- **Backend Deployed Link:** [https://cb-a2-hrms.onrender.com/docs](https://cb-a2-hrms.onrender.com/docs)
+
+> [!NOTE]
+> **Render Server Spin-up:** The frontend communicates with the backend hosted on Render. To spin up the backend server on Render (as it may sleep due to inactivity), simply open the backend deployment URL in your browser.
+
+---
+
 ## 🌟 Overview
 
 The AI HRMS Copilot is a modern Human Resources Management System designed to streamline HR operations with the power of Artificial Intelligence. It provides distinct role-based dashboards (Admin, Manager, Employee) and features a smart AI Assistant capable of answering HR policy questions and navigating the platform.
@@ -83,31 +97,53 @@ flowchart TD
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started & Local Setup
 
-### Prerequisites
-- Node.js 18+
-- npm, yarn, or pnpm
+Follow these simple, step-by-step instructions to set up the frontend application locally.
 
-### Installation
+### 📋 Prerequisites
 
-1. Clone the repository and navigate to the frontend folder.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Set up your `.env.local` file:
-   ```env
-   NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
-   NEXTAUTH_URL=http://localhost:3000
-   NEXTAUTH_SECRET=your_super_secret_key
-   ```
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
+Before you start, ensure you have the following installed on your machine:
+- **Node.js 18+**
+- **npm, yarn, or pnpm**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
+
+### ⚙️ Step-by-Step Installation Guide
+
+#### 1. Clone the Repository & Navigate to Frontend
+If you haven't already, clone the repository and navigate into the `frontend` directory:
+```bash
+git clone https://github.com/kuralnithi/CB_A2_HRMS_FRNTD.git
+cd CB_A2_HRMS_FRNTD/frontend
+```
+
+#### 2. Configure Environment Variables
+We have provided a detailed template file containing all the configuration keys. Copy the `sample.env` to a new `.env.local` file:
+```bash
+cp sample.env .env.local
+```
+Now, open the `.env.local` file and update the variables to point to your backend API URL and specify your NextAuth configurations.
+
+#### 3. Install Project Dependencies
+Run the following command to install the required packages:
+```bash
+npm install
+```
+
+#### 4. Start the Next.js Development Server
+Start the frontend development server:
+```bash
+npm run dev
+```
+
+---
+
+### 🔍 Verification & Access
+
+Once the server is running:
+- **Local Application URL:** Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
+- **Login Credentials:** Use the credentials seeded in the backend database (e.g., `admin@novaworks.local`, `manager@novaworks.local`, or `employee@novaworks.local` with password `password123`).
 
 ## 🛠️ Technology Stack
 - **Framework**: [Next.js](https://nextjs.org/) (App Router)
