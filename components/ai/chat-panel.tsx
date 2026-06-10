@@ -1007,6 +1007,9 @@ export default function ChatPanel({ user }: { user: any }) {
           return entry;
         });
 
+      // Flow: chat-panel.tsx handleSend() → POST /chat/router
+      //       → file:///c:/Users/kural/Downloads/capstone_project_assignments/ai_hr_copilot/backend/app/api/v1/endpoints/chat.py#L392 route_chat()
+      //       → file:///c:/Users/kural/Downloads/capstone_project_assignments/ai_hr_copilot/backend/app/services/ai/router.py#L227 route_query()
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat/router`, {
         method: "POST",
         headers: {
